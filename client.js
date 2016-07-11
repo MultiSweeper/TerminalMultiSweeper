@@ -40,12 +40,16 @@ function prompt(pr,accept){
 	return response;
 }
 
+let current_status_str="";
+
 {
 	let screen_inited=false;
 	function screen_init(){
-		kbd.setEcho(false);
-		kbd.setCanonical(false);
-		write("\x1B[2J\x1B[H\x1B[?1049h\x1B[1mMULTISWEEPER\x1B[0m                 (\x1B[1mq\x1B[0m to quit)");
+		if(!screen_inited){
+			kbd.setEcho(false);
+			kbd.setCanonical(false);
+		}
+		write("\x1B[2J\x1B[H\x1B[?1049h\x1B[1mMULTISWEEPER\x1B[0m                 (\x1B[1mq\x1B[0m to quit)   "+current_status_str);
 		screen_inited=true;
 	}
 
@@ -72,6 +76,8 @@ function bel(){
 		if(timeout!=null)clearTimeout();
 		moveto(43,0);
 		write("\x1B[K"+s);
+		current_status_str=s;
+		moveto(2+2*cursor[0],2+cursor[1]);
 		setTimeout(()=>show_status(""),5000);
 	}
 }
@@ -152,7 +158,9 @@ function sockonline(line){
 			break;
 
 		case "num_players":
+			screen_init();
 			num_players=+cmd[1];
+			players=[];
 			break;
 
 		case "player":
