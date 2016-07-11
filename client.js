@@ -77,11 +77,16 @@ function bel(){
 }
 
 function board_draw(){
+	moveto(0,1);
+	const topline="+"+Array(2*size[0]+2).join("-")+"+";
+	write(topline);
+
 	let i=0;
-	let clr,chr,rst,longclr;
+	let clr,chr,rst,longclr,longchr;
 	let nflags=0;
 	for(let y=0;y<size[1];y++){
-		moveto(2,y+2);
+		moveto(0,y+2);
+		write("| ");
 		for(let x=0;x<size[0];x++,i++){
 			nflags+=flags[i];
 			if(changeds[size[0]*y+x]){
@@ -96,10 +101,15 @@ function board_draw(){
 			else if(board[i]=="0")chr=" ";
 			else chr=board[i];
 			rst=clr!=""?"\x1B[0m":"";
+			longchr=x==size[0]-1?"|":" ";
 			write(clr+chr+(longclr?" "+rst:rst+" "));
 			longclr=false;
 		}
+		write("|");
 	}
+	moveto(0,size[1]+2);
+	write(topline);
+
 	moveto(2+2*size[0]+2,2+players.length+2);
 	const left=numbombs-nflags;
 	write(left+" bomb"+(left==1?"":"s")+" to go "+(left==0?":D":"D:")+"  ");
