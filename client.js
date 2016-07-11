@@ -159,6 +159,7 @@ function sockonline(line){
 				if(cmd[i+1]!=board[i]){
 					board[i]=cmd[i+1];
 					changeds[i]=true;
+					if(board[i]!="9"&&board[i]!="10"&&flags[i])flags[i]=false;
 				}
 			}
 			board_draw();
@@ -279,7 +280,7 @@ function kbdlistener(err,key){
 		case "l": board_move(1); break;
 
 		case "\n": case "\r": case " ":
-			if(canclick){
+			if(canclick&&!flags[size[0]*cursor[1]+cursor[0]]&&board[size[0]*cursor[1]+cursor[0]]=="9"){
 				sock.write("click "+cursor[0]+" "+cursor[1]+"\n");
 				changeds_reset();
 				changeds[size[0]*cursor[1]+cursor[0]]=true;
@@ -298,8 +299,11 @@ function kbdlistener(err,key){
 			return; //don't re-attach kbdlistener
 
 		case "f":
-			flags[size[0]*cursor[1]+cursor[0]]=!flags[size[0]*cursor[1]+cursor[0]];
-			board_draw();
+			if(board[size[0]*cursor[1]+cursor[0]]!="9")bel();
+			else {
+				flags[size[0]*cursor[1]+cursor[0]]=!flags[size[0]*cursor[1]+cursor[0]];
+				board_draw();
+			}
 			break;
 	}
 	kbd.getKey(kbdlistener);
